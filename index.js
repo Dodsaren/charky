@@ -15,6 +15,7 @@ const commandMap = {
   '!utbud': commandList,
   '!apod': apod,
   '!roll': roll,
+  '!korv': () => 'https://loremflickr.com/320/240/hotdog',
 }
 
 client.on('message', async msg => {
