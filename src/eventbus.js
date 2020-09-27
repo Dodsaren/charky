@@ -1,6 +1,6 @@
 const subs = []
 
-const eventbus = () => ({
+const eventbus = {
   subscribe: (callback) => {
     const symbol = Symbol()
     subs.push({
@@ -19,6 +19,6 @@ const eventbus = () => ({
       x.callback(message)
     })
   },
-})
+}
 
-module.exports = eventbus()
+module.exports = eventbus
