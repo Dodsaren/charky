@@ -19,7 +19,7 @@
     "discord.js": "^11.6.1",
     "dotenv": "^8.2.0",
     "ioredis": "^4.16.0",
-    "node-fetch": "^2.6.0"
+    "node-fetch": "^2.6.1"
   },
   "devDependencies": {
     "ioredis-mock": "^4.19.0",
