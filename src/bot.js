@@ -5,6 +5,7 @@ const eventbus = require('./eventbus')
 const client = new Discord.Client()
 const Redis = require('ioredis-mock')
 const redis = new Redis(6379)
+const { remind } = require('./remind')
 
 function initBot() {
   client.login(BOT_SECRET_TOKEN)
@@ -51,6 +52,7 @@ const commandMap = new Map([
   ['!kris', crisis],
   ['!corona', corona],
   ['!aktaHunden', aktaHunden],
+  ['!påminn', remind],
 ])
 
 async function apod() {
