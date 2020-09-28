@@ -7,6 +7,7 @@ const Redis = require('ioredis-mock')
 const redis = new Redis(6379)
 const gtts = require('gtts')
 const fs = require('fs')
+const { remind } = require('./remind')
 
 function initBot() {
   client.login(BOT_SECRET_TOKEN)
@@ -54,6 +55,7 @@ const commandMap = new Map([
   ['!corona', corona],
   ['!aktaHunden', aktaHunden],
   ['!förolämpa', insult],
+  ['!påminn', remind],
 ])
 
 async function apod() {
