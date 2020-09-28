@@ -5,6 +5,8 @@ const eventbus = require('./eventbus')
 const client = new Discord.Client()
 const Redis = require('ioredis-mock')
 const redis = new Redis(6379)
+const gtts = require('gtts')
+const fs = require('fs')
 const { remind } = require('./remind')
 
 function initBot() {
@@ -52,6 +54,7 @@ const commandMap = new Map([
   ['!kris', crisis],
   ['!corona', corona],
   ['!aktaHunden', aktaHunden],
+  ['!förolämpa', insult],
   ['!påminn', remind],
 ])
 
@@ -204,6 +207,40 @@ async function aktaHunden() {
   } else {
     return response.url
   }
+}
+
+async function insult(message) {
+  if (!message.member.voiceChannel) {
+    return `joina en snackchatt så kommer jag`
+  }
+
+  const response = await fetch(
+    'https://evilinsult.com/generate_insult.php?lang=en&type=json',
+  )
+  const json = await response.json()
+  const tts = new gtts(json.insult, 'en')
+  const tmpAudio = `./${Date.now()}.mp3`
+  tts.save(tmpAudio, (err) => {
+    if (err) {
+      console.error(err)
+    }
+  })
+  const connection = await message.member.voiceChannel.join()
+  const dispatcher = connection.playFile(tmpAudio)
+
+  dispatcher.on('end', () => {
+    fs.unlink(tmpAudio, (err) => {
+      if (err) {
+        console.error('raspberry pi disk about to fill up. kill charky', err)
+      }
+    })
+    dispatcher.destroy()
+    message.member.voiceChannel.leave()
+  })
+
+  dispatcher.on('error', console.error)
+
+  return `ses i ${message.member.voiceChannel.name}`
 }
 
 function dateToUtc(date) {

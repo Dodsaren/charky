@@ -15,9 +15,12 @@
   "author": "lolersunited",
   "license": "ISC",
   "dependencies": {
+    "@discordjs/opus": "^0.3.2",
     "cron": "^1.8.2",
     "discord.js": "^11.6.1",
     "dotenv": "^8.2.0",
+    "ffmpeg-static": "^4.2.7",
+    "gtts": "^0.2.1",
     "ioredis": "^4.16.0",
     "node-fetch": "^2.6.1"
   },
