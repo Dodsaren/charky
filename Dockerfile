@@ -1,4 +1,4 @@
-FROM arm64v8/node:13.8.0-alpine3.11
+FROM node:14.11.0-alpine3.12
 
 COPY package.json package-lock.json ./
 RUN npm ci
