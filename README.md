@@ -31,3 +31,9 @@ create a discord server and invite your bot to it with: https://discordapp.com/o
 Go ham.
 
 Invite link to the OG bot: https://discordapp.com/oauth2/authorize?client_id=683623472915546132&scope=bot
+
+## good ideas
+
+- reminder function
+- integration with youtube
+- ...
