@@ -1,4 +1,4 @@
-FROM arm64v8/node:14.11.0-alpine3.12
+FROM arm64v8/node:14.11.0-alpine3.11
 
 RUN apk add --update alpine-sdk
 RUN apk add --update --no-cache python
