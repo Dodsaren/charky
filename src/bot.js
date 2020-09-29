@@ -1,4 +1,4 @@
-const { BOT_SECRET_TOKEN, NASA_API_KEY } = process.env
+const { BOT_SECRET_TOKEN, NASA_API_KEY, BIBLE_API_KEY } = process.env
 const Discord = require('discord.js')
 const fetch = require('node-fetch')
 const eventbus = require('./eventbus')
@@ -7,6 +7,7 @@ const Redis = require('ioredis-mock')
 const redis = new Redis(6379)
 const gtts = require('gtts')
 const fs = require('fs')
+const striptags = require('striptags')
 const { remind } = require('./remind')
 
 function initBot() {
@@ -56,6 +57,7 @@ const commandMap = new Map([
   ['!aktaHunden', aktaHunden],
   ['!förolämpa', insult],
   ['!påminn', remind],
+  ['!predika', preach],
 ])
 
 async function apod() {
@@ -241,6 +243,48 @@ async function insult(message) {
   dispatcher.on('error', console.error)
 
   return `ses i ${message.member.voiceChannel.name}`
+}
+
+async function preach(message) {
+  if (!message.member.voiceChannel) {
+    return `gud vår heliga herre kan bara predika sin lära om du joinar en snackchatt`
+  }
+
+  const response = await fetch(
+    'https://api.scripture.api.bible/v1/bibles/9879dbb7cfe39e4d-04/passages/PSA.23.4',
+    {
+      headers: {
+        'api-key': BIBLE_API_KEY,
+      },
+    },
+  )
+  const json = await response.json()
+  const { content } = json.data
+  const textContent = striptags(content).replace(/\d+/g, '')
+
+  const tts = new gtts(`${textContent}, amen`, 'en')
+  const tmpAudio = `./${Date.now()}.mp3`
+  tts.save(tmpAudio, (err) => {
+    if (err) {
+      console.error(err)
+    }
+  })
+  const connection = await message.member.voiceChannel.join()
+  const dispatcher = connection.playFile(tmpAudio)
+
+  dispatcher.on('end', () => {
+    fs.unlink(tmpAudio, (err) => {
+      if (err) {
+        console.error('raspberry pi disk about to fill up. kill charky', err)
+      }
+    })
+    dispatcher.destroy()
+    message.member.voiceChannel.leave()
+  })
+
+  dispatcher.on('error', console.error)
+
+  return `predikar guds heliga lära i ${message.member.voiceChannel.name}`
 }
 
 function dateToUtc(date) {
