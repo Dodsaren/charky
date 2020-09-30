@@ -23,7 +23,7 @@ describe('remind', () => {
     it('should save the user as who if input is "mig"', () => {
       const input = '!påminn mig att "säga hej" om 3h'
       const result = parseWho(input, msgMock.author.id)
-      expect(result).toEqual('@<123>')
+      expect(result).toEqual('<@123>')
     })
     it('should handle multiple words as who', () => {
       const input = '!påminn kalle karlsson att "säga hej" om 3h'
@@ -41,6 +41,11 @@ describe('remind', () => {
       const input = '!påminn alla att säga hej om de är riktigt glada om 3h'
       const result = parseWhat(input)
       expect(result).toEqual('säga hej om de är riktigt glada')
+    })
+    it('should ignore "att" after first "att"', () => {
+      const input = '!påminn alla att skratta om 3h'
+      const result = parseWhat(input)
+      expect(result).toEqual('skratta')
     })
   })
   describe('parseWhen', () => {
