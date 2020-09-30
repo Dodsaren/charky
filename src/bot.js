@@ -251,7 +251,7 @@ async function preach(message) {
   }
 
   const response = await fetch(
-    'https://api.scripture.api.bible/v1/bibles/9879dbb7cfe39e4d-04/passages/PSA.23.4',
+    'https://api.scripture.api.bible/v1/bibles/fa4317c59f0825e0-01/passages/MAT.10.31',
     {
       headers: {
         'api-key': BIBLE_API_KEY,
@@ -262,7 +262,7 @@ async function preach(message) {
   const { content } = json.data
   const textContent = striptags(content).replace(/\d+/g, '')
 
-  const tts = new gtts(`${textContent}, amen`, 'en')
+  const tts = new gtts(`${textContent}, amen`, 'sv')
   const tmpAudio = `./${Date.now()}.mp3`
   tts.save(tmpAudio, (err) => {
     if (err) {
