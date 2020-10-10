@@ -1,22 +1,26 @@
 const CronJob = require('cron').CronJob
 const eventbus = require('./eventbus')
+const crisis = require('./crisis')
 
 function setupCronjobs() {
-  const goodMorningCronJob = new CronJob('00 00 09 * * *', () => {
+  const dailyCronJob = new CronJob('00 00 09 * * *', () => {
     const date = new Date()
-    if (date.getDay() === 5) {
-      eventbus.publish(
-        'äntligen fredag charkuterister. carpe diem, trevlig helg.',
-      )
-      return
+    switch (date.getDay()) {
+      case 5:
+        eventbus.publish(
+          'äntligen fredag charkuterister. carpe diem, trevlig helg.',
+        )
+        break
+      case 7:
+        eventbus.publish('https://imgur.com/gallery/BUz67Gn')
+        break
     }
-    eventbus.publish('god morgon charkuterister')
   })
   const crisisCronJob = new CronJob('00 05 09 * * *', async () => {
     const msg = await crisis()
     eventbus.publish(msg)
   })
-  goodMorningCronJob.start()
+  dailyCronJob.start()
   crisisCronJob.start()
 }
 

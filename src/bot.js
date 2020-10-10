@@ -9,22 +9,12 @@ const gtts = require('gtts')
 const fs = require('fs')
 const striptags = require('striptags')
 const { remind } = require('./remind')
+const crisis = require('./crisis')
 
 function initBot() {
   client.login(BOT_SECRET_TOKEN)
   client.on('ready', () => {
     console.log('Connected as ' + client.user.tag)
-    client.unsubscribe = eventbus.subscribe((msg) => {
-      client.channels.forEach((channel) => {
-        if (channel.type === 'text' && channel.name === 'general') {
-          channel.send(msg)
-          return
-        }
-      })
-    })
-  })
-  client.on('error', (error) => {
-    console.log('Horrible error', error)
   })
   client.on('message', async (msg) => {
     if (!msg.content.startsWith('!')) {
@@ -37,8 +27,20 @@ function initBot() {
       msg.reply(response)
     }
   })
+  client.unsubscribe = eventbus.subscribe((msg) => {
+    client.channels.forEach((channel) => {
+      if (channel.type === 'text' && channel.name === 'general') {
+        channel.send(msg)
+        return
+      }
+    })
+  })
   client.on('disconnect', () => {
     console.log('Disconnected ' + client.user.tag)
+    client.unsubscribe()
+  })
+  client.on('error', (error) => {
+    console.log('Horrible error', error)
     client.unsubscribe()
   })
 }
@@ -160,37 +162,6 @@ async function rollTot({ author }) {
   }
 }
 
-async function crisis() {
-  const response = await fetch(
-    'http://api.krisinformation.se/v1/feed?format=json',
-  )
-  const json = await response.json()
-  const { Entries } = json
-  const utcNow = Date.now()
-  const entries = Entries.reduce((p, c) => {
-    const utcDate = dateToUtc(new Date(c.Published))
-    if (utcNow - 1000 * 60 * 60 * 24 > utcDate) {
-      return p
-    }
-    const output = `${new Date(c.Published).toLocaleDateString()} - **${
-      c.Title
-    }**
-    *${c.Summary}*`
-    return [...p, output]
-  }, [])
-
-  if (entries.length < 1) {
-    return 'de inge kris! :sweat_smile:'
-  }
-
-  return `
-  >>> __***de kris***__
-
-  ${entries.join('\n\n')}
-
-  `
-}
-
 async function korv() {
   const response = await fetch('https://loremflickr.com/320/240/hotdog')
   return response.url
@@ -285,17 +256,6 @@ async function preach(message) {
   dispatcher.on('error', console.error)
 
   return `predikar guds heliga lära i ${message.member.voiceChannel.name}`
-}
-
-function dateToUtc(date) {
-  return Date.UTC(
-    date.getUTCFullYear(),
-    date.getUTCMonth(),
-    date.getUTCDate(),
-    date.getUTCHours(),
-    date.getUTCMinutes(),
-    date.getUTCSeconds(),
-  )
 }
 
 module.exports = initBot
