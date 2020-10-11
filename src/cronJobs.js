@@ -3,7 +3,7 @@ const eventbus = require('./eventbus')
 const crisis = require('./crisis')
 
 function setupCronjobs() {
-  const dailyCronJob = new CronJob('00 00 09 * * *', () => {
+  const morningCron = new CronJob('00 00 09 * * *', async () => {
     const date = new Date()
     switch (date.getDay()) {
       case 5:
@@ -11,17 +11,20 @@ function setupCronjobs() {
           'äntligen fredag charkuterister. carpe diem, trevlig helg.',
         )
         break
-      case 7:
+    }
+    const msg = await crisis()
+    eventbus.publish(msg)
+  })
+  const eveningCron = new CronJob('00 00 18 * * *', () => {
+    const date = new Date()
+    switch (date.getDay()) {
+      case 0:
         eventbus.publish('https://imgur.com/gallery/BUz67Gn')
         break
     }
   })
-  const crisisCronJob = new CronJob('00 05 09 * * *', async () => {
-    const msg = await crisis()
-    eventbus.publish(msg)
-  })
-  dailyCronJob.start()
-  crisisCronJob.start()
+  morningCron.start()
+  eveningCron.start()
 }
 
 module.exports = setupCronjobs
