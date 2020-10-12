@@ -10,6 +10,7 @@ const fs = require('fs')
 const striptags = require('striptags')
 const { remind } = require('./remind')
 const crisis = require('./crisis')
+const giphyClient = require('./giphyClient')
 
 function initBot() {
   client.login(BOT_SECRET_TOKEN)
@@ -163,8 +164,8 @@ async function rollTot({ author }) {
 }
 
 async function korv() {
-  const response = await fetch('https://loremflickr.com/320/240/hotdog')
-  return response.url
+  const msg = await giphyClient.getRandom('sausage')
+  return msg
 }
 
 function banan() {
