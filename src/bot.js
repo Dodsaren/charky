@@ -14,37 +14,38 @@ const giphyClient = require('./giphyClient')
 
 function initBot() {
   client.login(BOT_SECRET_TOKEN)
-  client.on('ready', () => {
-    console.log('Connected as ' + client.user.tag)
-  })
-  client.on('message', async (msg) => {
-    if (!msg.content.startsWith('!')) {
+}
+
+client.on('ready', () => {
+  console.log('Connected as ' + client.user.tag)
+})
+client.on('message', async (msg) => {
+  if (!msg.content.startsWith('!')) {
+    return
+  }
+  const [cmdString, ...args] = msg.content.split(' ')
+  const command = commandMap.get(cmdString)
+  if (command) {
+    const response = await command(msg, args)
+    msg.reply(response)
+  }
+})
+eventbus.subscribe((msg) => {
+  client.channels.forEach((channel) => {
+    if (channel.type === 'text' && channel.name === 'general') {
+      channel.send(msg)
       return
     }
-    const [cmdString, ...args] = msg.content.split(' ')
-    const command = commandMap.get(cmdString)
-    if (command) {
-      const response = await command(msg, args)
-      msg.reply(response)
-    }
   })
-  client.unsubscribe = eventbus.subscribe((msg) => {
-    client.channels.forEach((channel) => {
-      if (channel.type === 'text' && channel.name === 'general') {
-        channel.send(msg)
-        return
-      }
-    })
-  })
-  client.on('disconnect', () => {
-    console.log('Disconnected ' + client.user.tag)
-    client.unsubscribe()
-  })
-  client.on('error', (error) => {
-    console.log('Horrible error', error)
-    client.unsubscribe()
-  })
-}
+})
+client.on('disconnect', () => {
+  console.log('Disconnected ' + client.user.tag)
+  client.unsubscribe()
+})
+client.on('error', (error) => {
+  console.log('Horrible error', error)
+  client.unsubscribe()
+})
 
 const commandMap = new Map([
   ['!ping', () => 'pong!'],
@@ -164,8 +165,7 @@ async function rollTot({ author }) {
 }
 
 async function korv() {
-  const msg = await giphyClient.getRandom('sausage')
-  return msg
+  return await giphyClient.getRandom('sausage')
 }
 
 function banan() {
