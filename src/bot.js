@@ -40,11 +40,9 @@ eventbus.subscribe((msg) => {
 })
 client.on('disconnect', () => {
   console.log('Disconnected ' + client.user.tag)
-  client.unsubscribe()
 })
 client.on('error', (error) => {
   console.log('Horrible error', error)
-  client.unsubscribe()
 })
 
 const commandMap = new Map([
