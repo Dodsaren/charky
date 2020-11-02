@@ -34,6 +34,5 @@ Invite link to the OG bot: https://discordapp.com/oauth2/authorize?client_id=683
 
 ## good ideas
 
-- reminder function
 - integration with youtube
 - ...
