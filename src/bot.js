@@ -9,7 +9,7 @@ const gtts = require('gtts')
 const fs = require('fs')
 const striptags = require('striptags')
 const { remind } = require('./remind')
-const crisis = require('./crisis')
+const crisisClient = require('./crisisClient')
 const giphyClient = require('./giphyClient')
 
 function initBot() {
@@ -61,6 +61,14 @@ const commandMap = new Map([
   ['!påminn', remind],
   ['!predika', preach],
 ])
+
+async function crisis() {
+  const crisers = await crisisClient.feed()
+  if (!crisers.length) {
+    return 'var inte orolig, allt är ok :thumbsup:'
+  }
+  return '\n\n' + crisisClient.render(crisers)
+}
 
 async function apod() {
   const url = `https://api.nasa.gov/planetary/apod?api_key=${NASA_API_KEY}`
