@@ -11,13 +11,24 @@ const striptags = require('striptags')
 const { remind } = require('./remind')
 const crisisClient = require('./crisisClient')
 const giphyClient = require('./giphyClient')
+const { toggleCrisisReportingActivated } = require('./cronJobs')
 
 function initBot() {
   client.login(BOT_SECRET_TOKEN)
 }
 
+eventbus.subscribe((msg) => {
+  client.channels.forEach((channel) => {
+    if (channel.type === 'text' && channel.name === 'general') {
+      channel.send(msg)
+      return
+    }
+  })
+})
+
 client.on('ready', () => {
   console.log('Connected as ' + client.user.tag)
+  eventbus.publish('BEEP BOOP BEEP! :robot: :partying_face: :beers:')
 })
 client.on('message', async (msg) => {
   if (!msg.content.startsWith('!')) {
@@ -29,14 +40,6 @@ client.on('message', async (msg) => {
     const response = await command(msg, args)
     msg.reply(response)
   }
-})
-eventbus.subscribe((msg) => {
-  client.channels.forEach((channel) => {
-    if (channel.type === 'text' && channel.name === 'general') {
-      channel.send(msg)
-      return
-    }
-  })
 })
 client.on('disconnect', () => {
   console.log('Disconnected ' + client.user.tag)
@@ -60,7 +63,15 @@ const commandMap = new Map([
   ['!förolämpa', insult],
   ['!påminn', remind],
   ['!predika', preach],
+  ['!krisa', toggleCrisis],
 ])
+
+function toggleCrisis() {
+  const isActivated = toggleCrisisReportingActivated()
+  return `Krisrapportering ${
+    !isActivated ? 'in' : ''
+  }aktiverad beep boop beep :robot:`
+}
 
 async function crisis() {
   const crisers = await crisisClient.feed()

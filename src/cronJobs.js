@@ -3,6 +3,12 @@ const eventbus = require('./eventbus')
 const crisisClient = require('./crisisClient')
 const giphyClient = require('./giphyClient')
 
+let crisisReportingActivated = false
+function toggleCrisisReportingActivated() {
+  crisisReportingActivated = !crisisReportingActivated
+  return crisisReportingActivated
+}
+
 let lastCrisisTimeStamp = null
 
 function setupCronjobs() {
@@ -31,10 +37,12 @@ function setupCronjobs() {
       return
     }
     lastCrisisTimeStamp = filteredCrisers[0].Updated
-    eventbus.publish(crisisClient.render(filteredCrisers))
+    if (crisisReportingActivated) {
+      eventbus.publish(crisisClient.render(filteredCrisers))
+    }
   })
   morningCron.start()
   hourlyCron.start()
 }
 
-module.exports = setupCronjobs
+module.exports = { setupCronjobs, toggleCrisisReportingActivated }
