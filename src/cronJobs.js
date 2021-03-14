@@ -2,6 +2,7 @@ const CronJob = require('cron').CronJob
 const eventbus = require('./eventbus')
 const crisisClient = require('./crisisClient')
 const giphyClient = require('./giphyClient')
+const { updateTourneys, presenter } = require('./sc2tourneys')
 
 let crisisReportingActivated = false
 function toggleCrisisReportingActivated() {
@@ -16,14 +17,14 @@ function setupCronjobs() {
     const date = new Date()
     switch (date.getDay()) {
       case 1:
+        updateTourneys()
         eventbus.publish(await giphyClient.getRandom('monday'))
         break
       case 5:
         eventbus.publish(await giphyClient.getRandom('friday'))
         break
     }
-    const msg = await crisis()
-    eventbus.publish(msg)
+    eventbus.publish(presenter())
   })
   const hourlyCron = new CronJob('00 00 * * * *', async () => {
     const crisers = await crisisClient.feed()

@@ -15,6 +15,9 @@ const eventbus = {
     }
   },
   publish: (message) => {
+    if (!message) {
+      return
+    }
     subs.forEach((x) => {
       x.callback(message)
     })
