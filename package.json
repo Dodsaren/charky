@@ -20,7 +20,7 @@
     "cheerio-tableparser": "^1.0.1",
     "cron": "^1.8.2",
     "discord.js": "^11.6.1",
-    "dotenv": "^8.2.0",
+    "dotenv": "^8.6.0",
     "ffmpeg-static": "^4.2.7",
     "gtts": "^0.2.1",
     "ioredis": "^4.16.0",
