@@ -1,10 +1,14 @@
 const fetch = require('node-fetch')
+const logger = require('./logger')
 const { GIPHY_API_KEY } = process.env
 const baseUrl = 'https://api.giphy.com'
 
 const buildQueryString = (obj) =>
   Object.entries(obj).reduce(
-    (p, [k, v]) => (p === '' ? `?${k}=${v}` : `${p}&${k}=${v}`),
+    (p, [k, v]) =>
+      p === ''
+        ? `?${encodeURIComponent(k)}=${encodeURIComponent(v)}`
+        : `${p}&${encodeURIComponent(k)}=${encodeURIComponent(v)}`,
     '',
   )
 
@@ -19,5 +23,6 @@ exports.getRandom = async (searchTerm, randomness = 100) => {
   })
   const response = await request(`/v1/gifs/search${queryString}`)
   const json = await response.json().then((x) => x.data.shift())
+  logger('got random gif from giphy, query:', queryString)
   return json.embed_url
 }
