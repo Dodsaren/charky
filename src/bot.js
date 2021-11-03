@@ -17,7 +17,7 @@ const logger = require('./logger')
 let mainTextChannel = null
 
 function initBot() {
-  logger('Bot initializing... Version', process.env.npm_package_version)
+  logger('Bot initializing...')
   client.login(BOT_SECRET_TOKEN)
 }
 
