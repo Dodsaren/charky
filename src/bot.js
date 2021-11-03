@@ -12,22 +12,25 @@ const { remind } = require('./remind')
 const crisisClient = require('./crisisClient')
 const giphyClient = require('./giphyClient')
 const { toggleCrisisReportingActivated } = require('./cronJobs')
+const logger = require('./logger')
+
+let mainTextChannel = null
 
 function initBot() {
+  logger('Bot initializing... Version', process.env.npm_package_version)
   client.login(BOT_SECRET_TOKEN)
 }
 
 eventbus.subscribe((msg) => {
-  client.channels.forEach((channel) => {
-    if (channel.type === 'text' && channel.name === 'general') {
-      channel.send(msg)
-      return
-    }
-  })
+  mainTextChannel?.send(msg)
 })
 
 client.on('ready', () => {
-  console.log('Connected as ' + client.user.tag)
+  logger('Connected as', client.user.tag)
+  mainTextChannel = client.channels
+    .filter((x) => x.type === 'text')
+    .find((x) => x.position === 0)
+  logger('main text channel set, name:', mainTextChannel.name)
   eventbus.publish('BEEP BOOP BEEP! :robot: :partying_face: :beers:')
 })
 client.on('message', async (msg) => {
