@@ -5,10 +5,10 @@ const logger = require('./logger')
 const template = fs.readFileSync(path.join(__dirname, 'crisis.md')).toString()
 
 exports.feed = async () => {
-  logger('Loading crisis data')
   const response = await fetch(
     'https://api.krisinformation.se/v2/aggregatedfeed',
   )
+  logger('Loaded crisis data')
   return await response.json()
 }
 
