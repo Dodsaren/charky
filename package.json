@@ -21,7 +21,7 @@
     "cron": "^1.8.2",
     "dotenv": "^8.6.0",
     "discord.js": "^11.6.4",
-    "ffmpeg-static": "^4.2.7",
+    "ffmpeg-static": "^4.4.0",
     "gtts": "^0.2.1",
     "ioredis": "^4.27.8",
     "node-fetch": "^2.6.4",
