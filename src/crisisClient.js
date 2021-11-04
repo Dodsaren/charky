@@ -1,12 +1,14 @@
 const fetch = require('node-fetch')
 const fs = require('fs')
 const path = require('path')
+const logger = require('./logger')
 const template = fs.readFileSync(path.join(__dirname, 'crisis.md')).toString()
 
 exports.feed = async () => {
   const response = await fetch(
     'https://api.krisinformation.se/v2/aggregatedfeed',
   )
+  logger('Loaded crisis data')
   return await response.json()
 }
 

@@ -1,6 +1,7 @@
 const fetch = require('node-fetch')
 const cheerio = require('cheerio')
 const cheerioTableparser = require('cheerio-tableparser')
+const logger = require('./logger')
 
 const fourtyeight = 48 * 60 * 60 * 1000
 const twentyfour = 24 * 60 * 60 * 1000
@@ -16,6 +17,7 @@ async function updateTourneys() {
   ])
   const htmls = await Promise.all(responses.map((x) => x.text()))
   tourneys = parseHtmls(htmls, year)
+  logger('sc2 tourney data updated', tourneys)
 }
 
 function parseHtmls(htmls, year) {
@@ -52,15 +54,10 @@ function presenter() {
     .reduce((p, c) => {
       if (isDateToday(c.date)) {
         p = [...p, `Idag börjar ${c.tourney}, :partying_face: :beer: :popcorn:`]
-      }
-      if (c.date - now <= twentyfour) {
+      } else if (c.date - now <= twentyfour) {
         p = [...p, `Imorgon börjar ${c.tourney}`]
-      }
-      if (c.date - now <= fourtyeight) {
-        p = [
-          ...p,
-          `Dags att ta ledigt från kneget, bara två dar kvar till ${c.tourney}`,
-        ]
+      } else if (c.date - now <= fourtyeight) {
+        p = [...p, `Två dar kvar till ${c.tourney}`]
       }
       return p
     }, [])

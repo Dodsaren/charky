@@ -1,3 +1,5 @@
+const logger = require('./logger')
+
 const subs = []
 
 const eventbus = {
@@ -7,6 +9,7 @@ const eventbus = {
       symbol,
       callback,
     })
+    logger('subscriber added to eventbus, new subscriber count', subs.length)
     return () => {
       subs.splice(
         subs.findIndex((x) => x.symbol === symbol),
