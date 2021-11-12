@@ -3,8 +3,6 @@ const cheerio = require('cheerio')
 const cheerioTableparser = require('cheerio-tableparser')
 const logger = require('./logger')
 
-const fourtyeight = 48 * 60 * 60 * 1000
-const twentyfour = 24 * 60 * 60 * 1000
 let tourneys = []
 updateTourneys()
 
@@ -49,15 +47,13 @@ function parseTableData(table, year) {
 }
 
 function presenter() {
-  const now = new Date()
   return tourneys
     .reduce((p, c) => {
       if (isDateToday(c.date)) {
-        p = [...p, `Idag börjar ${c.tourney}, :partying_face: :beer: :popcorn:`]
-      } else if (c.date - now <= twentyfour) {
-        p = [...p, `Imorgon börjar ${c.tourney}`]
-      } else if (c.date - now <= fourtyeight) {
-        p = [...p, `Två dar kvar till ${c.tourney}`]
+        p = [
+          ...p,
+          `Idag börjar ${c.tourney}, :partying_face: :beer: :popcorn: :zerg: :protoss: :salt:`,
+        ]
       }
       return p
     }, [])
