@@ -1,10 +1,11 @@
-const { BOT_SECRET_TOKEN, NASA_API_KEY, BIBLE_API_KEY } = process.env
+const { BOT_SECRET_TOKEN, NASA_API_KEY, BIBLE_API_KEY, REDIS_HOST } =
+  process.env
 const Discord = require('discord.js')
 const fetch = require('node-fetch')
 const eventbus = require('./eventbus')
 const client = new Discord.Client()
-const Redis = require('ioredis-mock')
-const redis = new Redis(6379)
+const Redis = REDIS_HOST ? require('ioredis') : require('ioredis-mock')
+const redis = REDIS_HOST ? new Redis(6379, REDIS_HOST) : new Redis(6379)
 const gtts = require('gtts')
 const fs = require('fs')
 const striptags = require('striptags')
