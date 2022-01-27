@@ -1,9 +1,11 @@
 version: '3.8'
 services:
   app:
+    environment:
+      TZ: ${TZ}
     env_file:
       - .env
-    build: 
+    build:
       context: ./
     links:
       - redis
