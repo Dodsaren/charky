@@ -3,7 +3,11 @@ const { BOT_SECRET_TOKEN, NASA_API_KEY, BIBLE_API_KEY, REDIS_HOST } =
 const Discord = require('discord.js')
 const fetch = require('node-fetch')
 const eventbus = require('./eventbus')
-const client = new Discord.Client()
+const client = new Discord.Client({
+  intents: ['GUILDS', 'GUILD_MESSAGES', 'DIRECT_MESSAGES'],
+  partials: ['CHANNEL'],
+})
+
 const Redis = REDIS_HOST ? require('ioredis') : require('ioredis-mock')
 const redis = REDIS_HOST ? new Redis(6379, REDIS_HOST) : new Redis(6379)
 const gtts = require('gtts')
@@ -28,13 +32,9 @@ eventbus.subscribe((msg) => {
 
 client.on('ready', () => {
   logger('Connected as', client.user.tag)
-  mainTextChannel = client.channels
-    .filter((x) => x.type === 'text')
-    .find((x) => x.position === 0)
-  logger('main text channel set, name:', mainTextChannel.name)
-  eventbus.publish('BEEP BOOP BEEP! :robot: :partying_face: :beers:')
 })
-client.on('message', async (msg) => {
+
+client.on('messageCreate', async (msg) => {
   if (!msg.content.startsWith('!')) {
     return
   }
@@ -239,7 +239,7 @@ async function insult(message) {
 }
 
 async function preach(message) {
-  if (!message.member.voiceChannel) {
+  if (!message.member.voice.channel) {
     return `gud vår heliga herre kan bara predika sin lära om du joinar en snackchatt`
   }
 
