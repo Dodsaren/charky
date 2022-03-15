@@ -1,23 +1,34 @@
 const { BOT_SECRET_TOKEN, NASA_API_KEY, BIBLE_API_KEY, REDIS_HOST } =
   process.env
-const Discord = require('discord.js')
+const { Client, Intents } = require('discord.js')
 const fetch = require('node-fetch')
 const eventbus = require('./eventbus')
-const client = new Discord.Client({
-  intents: ['GUILDS', 'GUILD_MESSAGES', 'DIRECT_MESSAGES'],
+const client = new Client({
+  intents: [
+    Intents.FLAGS.GUILDS,
+    Intents.FLAGS.GUILD_MESSAGES,
+    Intents.FLAGS.DIRECT_MESSAGES,
+    Intents.FLAGS.GUILD_VOICE_STATES,
+  ],
   partials: ['CHANNEL'],
 })
-
 const Redis = REDIS_HOST ? require('ioredis') : require('ioredis-mock')
 const redis = REDIS_HOST ? new Redis(6379, REDIS_HOST) : new Redis(6379)
-const gtts = require('gtts')
-const fs = require('fs')
 const striptags = require('striptags')
 const { remind } = require('./remind')
 const crisisClient = require('./crisisClient')
 const giphyClient = require('./giphyClient')
 const { toggleCrisisReportingActivated } = require('./cronJobs')
 const logger = require('./logger')
+const discordTTS = require('discord-tts')
+
+const {
+  createAudioResource,
+  joinVoiceChannel,
+  StreamType,
+  createAudioPlayer,
+  AudioPlayerStatus,
+} = require('@discordjs/voice')
 
 let mainTextChannel = null
 
@@ -139,11 +150,7 @@ async function roll({ author }, args) {
       return 'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fih1.redbubble.net%2Fimage.280065502.4484%2Fflat%2C800x800%2C075%2Cf.jpg&f=1&nofb=1'
     }
 
-    return `Grattis, du fick **${roll}**
-Man kan också
-*!rulla d20*
-*!rulla 2d10*
-*!rulla 4d6+15*`
+    return `Grattis, du fick **${roll}** Man kan också *!rulla d20* *!rulla 2d10* *!rulla 4d6+15*`
   }
 
   const rolls = [...Array(parseInt(args[0].split('d')[0] || 1)).keys()]
@@ -154,12 +161,10 @@ Man kan också
     const nat = rolls.map(() => result(dice))
     const total = nat.reduce(sum, extra)
     await redis.sadd(`rolls/${author.id}`, total)
-    return `
-${nat.length > 1 || extra > 0 ? nat.join(' + ') : ''}${
+    return `${nat.length > 1 || extra > 0 ? nat.join(' + ') : ''}${
       extra > 0 ? ` *+ ${extra}*` : ''
     }${nat.length > 1 || extra > 0 ? '\n' : ''}**${total}**`
   }
-
   return roll(dice, rolls, extra)
 }
 
@@ -205,44 +210,38 @@ async function aktaHunden() {
 }
 
 async function insult(message) {
-  if (!message.member.voiceChannel) {
+  const member = await message.guild.members.fetch(message.author.id)
+  if (!member.voice.channel) {
     return `joina en snackchatt så kommer jag`
   }
-
   const response = await fetch(
     'https://evilinsult.com/generate_insult.php?lang=en&type=json',
   )
   const json = await response.json()
-  const tts = new gtts(json.insult, 'en')
-  const tmpAudio = `./${Date.now()}.mp3`
-  tts.save(tmpAudio, (err) => {
-    if (err) {
-      console.error(err)
-    }
+  const stream = discordTTS.getVoiceStream(json.insult, {
+    lang: 'en',
   })
-  const connection = await message.member.voiceChannel.join()
-  const dispatcher = connection.playFile(tmpAudio)
-
-  dispatcher.on('end', () => {
-    fs.unlink(tmpAudio, (err) => {
-      if (err) {
-        console.error('raspberry pi disk about to fill up. kill charky', err)
-      }
-    })
-    dispatcher.destroy()
-    message.member.voiceChannel.leave()
+  const resource = createAudioResource(stream, {
+    inputType: StreamType.Arbitrary,
+    inlineVolume: true,
   })
-
-  dispatcher.on('error', console.error)
-
-  return `ses i ${message.member.voiceChannel.name}`
+  const connection = joinVoiceChannel({
+    channelId: member.voice.channel.id,
+    guildId: message.guild.id,
+    adapterCreator: message.guild.voiceAdapterCreator,
+  })
+  const player = createAudioPlayer()
+  player.play(resource)
+  connection.subscribe(player)
+  player.on(AudioPlayerStatus.Idle, () => connection.destroy())
+  return `ses i ${member.voice.channel.name}`
 }
 
 async function preach(message) {
-  if (!message.member.voice.channel) {
+  const member = await message.guild.members.fetch(message.author.id)
+  if (!member.voice.channel) {
     return `gud vår heliga herre kan bara predika sin lära om du joinar en snackchatt`
   }
-
   const response = await fetch(
     'https://api.scripture.api.bible/v1/bibles/fa4317c59f0825e0-01/passages/MAT.10.31',
     {
@@ -254,30 +253,23 @@ async function preach(message) {
   const json = await response.json()
   const { content } = json.data
   const textContent = striptags(content).replace(/\d+/g, '')
-
-  const tts = new gtts(`${textContent}, amen`, 'sv')
-  const tmpAudio = `./${Date.now()}.mp3`
-  tts.save(tmpAudio, (err) => {
-    if (err) {
-      console.error(err)
-    }
+  const stream = discordTTS.getVoiceStream(textContent, {
+    lang: 'sv',
   })
-  const connection = await message.member.voiceChannel.join()
-  const dispatcher = connection.playFile(tmpAudio)
-
-  dispatcher.on('end', () => {
-    fs.unlink(tmpAudio, (err) => {
-      if (err) {
-        console.error('raspberry pi disk about to fill up. kill charky', err)
-      }
-    })
-    dispatcher.destroy()
-    message.member.voiceChannel.leave()
+  const resource = createAudioResource(stream, {
+    inputType: StreamType.Arbitrary,
+    inlineVolume: true,
   })
-
-  dispatcher.on('error', console.error)
-
-  return `predikar guds heliga lära i ${message.member.voiceChannel.name}`
+  const connection = joinVoiceChannel({
+    channelId: member.voice.channel.id,
+    guildId: message.guild.id,
+    adapterCreator: message.guild.voiceAdapterCreator,
+  })
+  const player = createAudioPlayer()
+  player.play(resource)
+  connection.subscribe(player)
+  player.on(AudioPlayerStatus.Idle, () => connection.destroy())
+  return `predikar guds heliga lära i ${message.member.voice.channel.name}`
 }
 
 module.exports = initBot

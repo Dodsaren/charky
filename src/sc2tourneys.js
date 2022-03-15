@@ -9,13 +9,17 @@ updateTourneys()
 async function updateTourneys() {
   const now = new Date()
   const year = now.getFullYear()
-  const responses = await Promise.all([
-    fetch('https://liquipedia.net/starcraft2/Major_Tournaments'),
-    fetch('https://liquipedia.net/starcraft2/Premier_Tournaments'),
-  ])
-  const htmls = await Promise.all(responses.map((x) => x.text()))
-  tourneys = parseHtmls(htmls, year)
-  logger('sc2 tourney data updated', tourneys)
+  try {
+    const responses = await Promise.all([
+      fetch('https://liquipedia.net/starcraft2/Major_Tournaments'),
+      fetch('https://liquipedia.net/starcraft2/Premier_Tournaments'),
+    ])
+    const htmls = await Promise.all(responses.map((x) => x.text()))
+    tourneys = parseHtmls(htmls, year)
+    logger('sc2 tourney data updated', tourneys)
+  } catch (err) {
+    logger('error fetching tourney data', err)
+  }
 }
 
 function parseHtmls(htmls, year) {

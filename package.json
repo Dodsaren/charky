@@ -25,12 +25,14 @@
     "cheerio-tableparser": "^1.0.1",
     "cron": "^1.8.2",
     "discord-api-types": "^0.26.1",
+    "discord-tts": "^1.2.1",
     "discord.js": "^13.6.0",
     "dotenv": "^8.6.0",
     "ffmpeg-static": "^4.4.0",
-    "gtts": "^0.2.1",
     "ioredis": "^4.28.0",
     "node-fetch": "^2.6.5",
+    "opusscript": "^0.0.8",
+    "sodium": "^3.0.2",
     "striptags": "^3.2.0"
   },
   "devDependencies": {
