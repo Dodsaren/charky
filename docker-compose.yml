@@ -3,6 +3,7 @@ services:
   app:
     environment:
       TZ: ${TZ}
+      REDIS_HOST: redis
     env_file:
       - .env
     build:
@@ -12,6 +13,6 @@ services:
   redis:
     image: redis
     volumes:
-      - redis_data:/redis_data
+      - redis_data:/data
 volumes:
   redis_data:
