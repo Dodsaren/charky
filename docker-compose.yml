@@ -1,17 +1,19 @@
 version: '3.8'
 services:
   app:
-    environment:
-      TZ: ${TZ}
-    env_file:
-      - .env
     build:
       context: ./
+    restart: unless-stopped
+    environment:
+      TZ: ${TZ}
+      REDIS_HOST: redis
+    env_file:
+      - .env
     links:
       - redis
   redis:
     image: redis
     volumes:
-      - redis_data:/redis_data
+      - redis_data:/data
 volumes:
   redis_data:
