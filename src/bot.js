@@ -30,7 +30,7 @@ const {
   AudioPlayerStatus,
 } = require('@discordjs/voice')
 
-let mainTextChannel = null
+let mainTextChannels = []
 
 function initBot() {
   logger('Bot initializing...')
@@ -38,10 +38,17 @@ function initBot() {
 }
 
 eventbus.subscribe((msg) => {
-  mainTextChannel?.send(msg)
+  mainTextChannels.forEach((x) => x?.send(msg))
 })
 
-client.on('ready', () => {
+client.on('ready', async () => {
+  mainTextChannels = [...client.channels.cache.values()].filter(
+    (x) => x.type === 'GUILD_TEXT' && x.rawPosition === 0,
+  )
+  console.log(
+    'main text channels registered to eventbus:',
+    mainTextChannels.map((x) => x.name).join(', '),
+  )
   logger('Connected as', client.user.tag)
 })
 
@@ -209,13 +216,21 @@ async function aktaHunden() {
   }
 }
 
+function cacheBuster() {
+  return Array(100)
+    .fill()
+    .map((_, index) => index + 1)
+    .sort(() => Math.random() - 0.5)
+    .slice(0, 10)
+}
+
 async function insult(message) {
   const member = await message.guild.members.fetch(message.author.id)
   if (!member.voice.channel) {
     return `joina en snackchatt så kommer jag`
   }
   const response = await fetch(
-    'https://evilinsult.com/generate_insult.php?lang=en&type=json',
+    `https://evilinsult.com/generate_insult.php?lang=en&type=json&_=${cacheBuster()}`,
   )
   const json = await response.json()
   const stream = discordTTS.getVoiceStream(json.insult, {
