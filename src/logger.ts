@@ -1,5 +1,5 @@
 var i = 0
-module.exports = (msg, ...args) => {
+export default (msg: string, ...args: any[]) => {
   const d = new Date()
   const color = i % 2 === 0 ? '33m' : '36m'
   console.log(

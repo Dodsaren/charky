@@ -1,4 +1,4 @@
-FROM arm64v8/node:16.13.0-alpine3.11
+FROM arm64v8/node:18.3.0-alpine3.11
 
 RUN apk add --update alpine-sdk
 RUN apk add --update make
@@ -13,4 +13,4 @@ RUN npm ci
 COPY ./src/ ./src/
 COPY ./index.js ./index.js
 
-CMD ["node", "index.js"]
+CMD ["ts-node", "index.ts"]

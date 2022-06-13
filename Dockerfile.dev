@@ -1,4 +1,4 @@
-FROM node:16.13.0-alpine3.11
+FROM node:18.3.0-alpine3.15
 
 RUN apk add --update alpine-sdk
 RUN apk add --update make
@@ -11,6 +11,6 @@ COPY package*.json ./
 RUN npm i
 
 COPY ./src/ ./src/
-COPY ./index.js ./index.js
+COPY ./index.ts ./index.ts
 
-CMD ["node", "index.js"]
+CMD ["npm", "start"]

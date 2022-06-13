@@ -1,9 +1,10 @@
-const logger = require('./logger')
+import logger from './logger'
 
-const subs = []
+type SubscriberCallback = (msg: string) => void
+const subs: { symbol: Symbol; callback: SubscriberCallback }[] = []
 
 const eventbus = {
-  subscribe: (callback) => {
+  subscribe: (callback: SubscriberCallback) => {
     const symbol = Symbol()
     subs.push({
       symbol,
@@ -17,7 +18,7 @@ const eventbus = {
       )
     }
   },
-  publish: (message) => {
+  publish: (message: string) => {
     if (!message) {
       return
     }
@@ -27,4 +28,4 @@ const eventbus = {
   },
 }
 
-module.exports = eventbus
+export default eventbus
