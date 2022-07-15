@@ -13,4 +13,4 @@ RUN npm ci
 COPY ./src/ ./src/
 COPY ./index.ts ./index.ts
 
-CMD ["ts-node", "index.ts"]
+CMD ["npm", "start"]

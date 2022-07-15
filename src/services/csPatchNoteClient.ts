@@ -35,7 +35,6 @@ async function getPatchNotes() {
   const feed = await parser.parseString(text)
   const minusOneHour = new Date()
   minusOneHour.setHours(minusOneHour.getHours() - 1)
-  minusOneHour.setDate(minusOneHour.getDate() - 4)
   const patchNotesBlocks = feed.items
     .filter((x) => x.pubDate && new Date(x.pubDate) > minusOneHour)
     .map((item) => {
