@@ -2,7 +2,6 @@ version: '3.8'
 services:
   app:
     build:
-      dockerfile: Dockerfile.dev
       context: ./
     restart: unless-stopped
     environment:

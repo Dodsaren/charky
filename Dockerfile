@@ -11,6 +11,6 @@ COPY package.json package-lock.json ./
 RUN npm ci
 
 COPY ./src/ ./src/
-COPY ./index.js ./index.js
+COPY ./index.ts ./index.ts
 
 CMD ["ts-node", "index.ts"]
