@@ -1,9 +1,9 @@
-const fetch = require('node-fetch')
-const logger = require('./logger')
+import logger from './logger'
+import fetch from 'node-fetch'
 const { GIPHY_API_KEY } = process.env
 const baseUrl = 'https://api.giphy.com'
 
-const buildQueryString = (obj) =>
+const buildQueryString = (obj: Record<string, string | number>) =>
   Object.entries(obj).reduce(
     (p, [k, v]) =>
       p === ''
@@ -12,9 +12,12 @@ const buildQueryString = (obj) =>
     '',
   )
 
-const request = (path) => fetch(baseUrl + path)
+const request = (path: string) => fetch(baseUrl + path)
 
-exports.getRandom = async (searchTerm, randomness = 100) => {
+const getRandom = async (searchTerm: string, randomness = 100) => {
+  if (!GIPHY_API_KEY) {
+    throw new Error('GIPHY_API_KEY is not set')
+  }
   const queryString = buildQueryString({
     api_key: GIPHY_API_KEY,
     q: searchTerm,
@@ -23,6 +26,10 @@ exports.getRandom = async (searchTerm, randomness = 100) => {
   })
   const response = await request(`/v1/gifs/search${queryString}`)
   const json = await response.json().then((x) => x.data.shift())
-  logger('got random gif from giphy, query:', queryString)
+  logger('got random gif from giphy, query:', json.embed_url)
   return json.embed_url
+}
+
+export default {
+  getRandom,
 }
