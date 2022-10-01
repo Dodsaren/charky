@@ -39,12 +39,13 @@ async function getPatchNotes() {
     .filter((x) => x.pubDate && new Date(x.pubDate) > minusOneHour)
     .map((item) => {
       const d = item.pubDate ? new Date(item.pubDate) : new Date()
-      return codeBlock(
+      const str = codeBlock(
         `CS:GO patch notes ${d.toLocaleString('sv-SE')} \n\n${extract(
           parseDocument(decodeURIComponent(decode(item['content:encoded'])))
             .children,
         )}`,
       )
+      return str.length > 2000 ? `cs parre -> ${item.link}` : str
     })
   return patchNotesBlocks.reverse()
 }
