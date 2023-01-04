@@ -1,8 +1,16 @@
-steps:
-- uses: actions/ssh-auth@v1
-  with:
-    username: github
-    hostname: 178.132.77.106
-    port: 50000
-    private-key: ${{ secrets.SSH_PRIVATE_KEY }}
-- run: ssh github@<HOSTNAME> "echo 'Hello from the Raspberry Pi'"
+name: Deploy to Raspberry Pi
+
+on:
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/ssh-auth@v1
+      with:
+        username: github
+        hostname: 178.132.77.106
+        port: 50000
+        private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+    - run: ssh github@178.132.77.106 -p 50000 "echo 'Hello from the Raspberry Pi'"
