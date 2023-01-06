@@ -13,9 +13,9 @@ jobs:
           ENV: 'prod'
           REDIS_HOST: 'redis'
           TZ: 'Europe/Stockholm'
-          BOT_SECRET_TOKEN: '${{ secrets.BOT_SECRET_TOKEN }}'
-          GIPHY_API_KEY: '${{ secrets.GIPHY_API_KEY }}'
-          BIBLE_API_KEY: '${{ secrets.BIBLE_API_KEY }}'
+          BOT_SECRET_TOKEN: ${{ secrets.BOT_SECRET_TOKEN }}
+          GIPHY_API_KEY: ${{ secrets.GIPHY_API_KEY }}
+          BIBLE_API_KEY: ${{ secrets.BIBLE_API_KEY }}
         with:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
@@ -27,7 +27,7 @@ jobs:
             export ENV=$ENV
             export REDIS_HOST=$REDIS_HOST
             export TZ=$TZ
-            export BOT_SECRET_TOKEN=$EBOT_SECRET_TOKENV
+            export BOT_SECRET_TOKEN=$BOT_SECRET_TOKEN
             export GIPHY_API_KEY=$GIPHY_API_KEY
             export BIBLE_API_KEY=$BIBLE_API_KEY
             cd charky
