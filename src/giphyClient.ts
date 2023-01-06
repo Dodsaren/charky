@@ -26,7 +26,7 @@ const getRandom = async (searchTerm: string, randomness = 100) => {
   })
   const response = await request(`/v1/gifs/search${queryString}`)
   const json = await response.json().then((x) => x.data.shift())
-  logger('got random gif from giphy, query:', json.embed_url)
+  logger.info('got random gif from giphy, query:', json.embed_url)
   return json.embed_url
 }
 

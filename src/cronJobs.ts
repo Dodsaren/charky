@@ -11,7 +11,7 @@ function setupCronjobs() {
   const hCron = new CronJob('00 00 * * * *', hourly)
   mCron.start()
   hCron.start()
-  logger('cron jobs started')
+  logger.info('cron jobs started')
 }
 
 async function morning() {
@@ -19,11 +19,11 @@ async function morning() {
   switch (date.getDay()) {
     case 1:
       eventbus.publish(await giphyClient.getRandom('monday'))
-      logger('published monday gif')
+      logger.info('published monday gif')
       break
     case 5:
       eventbus.publish(await giphyClient.getRandom('friday'))
-      logger('published friday gif')
+      logger.info('published friday gif')
       break
   }
 }

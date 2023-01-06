@@ -12,5 +12,6 @@ RUN npm ci
 
 COPY ./src/ ./src/
 COPY ./index.ts ./index.ts
+RUN npm build
 
 CMD ["npm", "start"]

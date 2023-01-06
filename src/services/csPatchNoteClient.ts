@@ -11,7 +11,7 @@ async function getPatchNotes() {
   const res = await fetch(
     'https://blog.counter-strike.net/index.php/category/updates/feed/',
   )
-  logger('CS:GO patch notes fetched with status', res.status)
+  logger.info('CS:GO patch notes fetched with status', res.status)
   if (res.status !== 200) {
     throw new Error(`Failed to fetch patch notes: ${res.status}`)
   }

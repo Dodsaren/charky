@@ -23,7 +23,7 @@ async function loadCommands() {
       }
     }
   }
-  console.log('commands registered', commandMap)
+  logger.info('commands registered', commandMap)
 }
 
 const client = new Client({
@@ -45,11 +45,11 @@ client.on('ready', async () => {
   mainTextChannels = [...client.channels.cache.values()].filter(
     (x) => x.type === 'GUILD_TEXT' && x.rawPosition === 0,
   ) as TextChannel[]
-  console.log(
+  logger.info(
     'main text channels registered:',
     mainTextChannels.map((x) => x.name).join(', '),
   )
-  logger('Bot connected')
+  logger.info('Bot connected')
 })
 
 client.on('messageCreate', async (msg) => {
@@ -66,15 +66,15 @@ client.on('messageCreate', async (msg) => {
 })
 
 client.on('disconnect', () => {
-  console.log('Disconnected')
+  logger.info('Disconnected')
 })
 
 client.on('error', (error) => {
-  console.log('Horrible error', error)
+  logger.info('Horrible error', error)
 })
 
 export default async () => {
-  logger('Bot initializing...')
+  logger.info('Bot initializing...')
   await loadCommands()
   client.login(BOT_SECRET_TOKEN)
 }

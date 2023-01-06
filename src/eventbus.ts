@@ -10,7 +10,10 @@ const eventbus = {
       symbol,
       callback,
     })
-    logger('subscriber added to eventbus, new subscriber count', subs.length)
+    logger.info(
+      'subscriber added to eventbus, new subscriber count',
+      subs.length,
+    )
     return () => {
       subs.splice(
         subs.findIndex((x) => x.symbol === symbol),
