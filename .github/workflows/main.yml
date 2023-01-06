@@ -27,4 +27,4 @@ jobs:
             git checkout master
             git pull
             ls -la
-            docker compose up -d --build
+            docker compose up --force-recreate -d
