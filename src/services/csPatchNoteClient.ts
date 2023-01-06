@@ -8,27 +8,12 @@ import logger from '../logger'
 import redisClient from './redisClient'
 
 async function getPatchNotes() {
-  const etag = await redisClient.get('csPatchNotesEtag')
-  const headers = new Headers()
-  if (etag) {
-    headers.set('If-None-Match', etag)
-  }
   const res = await fetch(
     'https://blog.counter-strike.net/index.php/category/updates/feed/',
-    {
-      headers,
-    },
   )
   logger('CS:GO patch notes fetched with status', res.status)
-  if (res.status === 304) {
-    return
-  }
   if (res.status !== 200) {
     throw new Error(`Failed to fetch patch notes: ${res.status}`)
-  }
-  const etagHeader = res.headers.get('etag')
-  if (etagHeader) {
-    await redisClient.set('csPatchNotesEtag', etagHeader)
   }
   const text = await res.text()
   let parser = new RssParser()

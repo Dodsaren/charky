@@ -2,16 +2,16 @@
 
 A discord bot written in node with the discordjs api.
 
-To run locally you must have node and npm on your system. 
+To run locally you must have node and npm on your system.
 
-The best ways to handle node and npm installations is with nvm. 
+The best ways to handle node and npm installations is with nvm.
 This will let you have different versions of node and npm on your system and easily switch between them.
 
 MacOS/Linux: https://github.com/nvm-sh/nvm
 
 Windows: https://github.com/coreybutler/nvm-windows
 
-To test your code before publishing a PR I recommend that you 
+To test your code before publishing a PR I recommend that you
 create a separate app and bot at https://discordapp.com/developers/applications
 
 Copy your bots secret token and paste it into an environment file, see below

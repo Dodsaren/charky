@@ -155,18 +155,7 @@ describe('csPatchNoteClient.getPatchNotes', () => {
     )
   })
 
-  it('should return undefined if response is 304', async () => {
-    server.use(
-      rest.get(
-        'https://blog.counter-strike.net/index.php/category/updates/feed/',
-        (_req, res, ctx) => res(ctx.status(304)),
-      ),
-    )
-    const result = await getPatchNotes()
-    expect(result?.[0]).toEqual(undefined)
-  })
-
   // TODO
   // Prevent logs in test output.
-  // Test for statuses other than 200 and 304
+  // Test for statuses other than 200
 })
