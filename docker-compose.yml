@@ -3,16 +3,19 @@ services:
   app:
     build:
       context: ./
-    restart: unless-stopped
     environment:
-      TZ: ${TZ}
-      REDIS_HOST: redis
-    env_file:
-      - .env
+      - ENV=${ENV}
+      - REDIS_HOST=${REDIS_HOST}
+      - TZ=${TZ}
+      - BOT_SECRET_TOKEN=${BOT_SECRET_TOKEN}
+      - GIPHY_API_KEY=${GIPHY_API_KEY}
+      - BIBLE_API_KEY=${BIBLE_API_KEY}
+    restart: unless-stopped
     links:
       - redis
   redis:
     image: redis
+    restart: unless-stopped
     volumes:
       - redis_data:/data
 volumes:

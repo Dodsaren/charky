@@ -1,0 +1,30 @@
+name: Deploy
+
+on:
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 'Build and start'
+        uses: appleboy/ssh-action@v0.1.6
+        env:
+          ENV: 'prod'
+          REDIS_HOST: 'redis'
+          TZ: 'Europe/Stockholm'
+          BOT_SECRET_TOKEN: ${{ secrets.BOT_SECRET_TOKEN }}
+          GIPHY_API_KEY: ${{ secrets.GIPHY_API_KEY }}
+          BIBLE_API_KEY: ${{ secrets.BIBLE_API_KEY }}
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.PORT }}
+          command_timeout: 30m
+          script: |
+            cd charky
+            git checkout master
+            git pull
+            ls -la
+            docker compose up -d --build
