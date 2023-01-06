@@ -4,12 +4,12 @@ services:
     build:
       context: ./
     environment:
-      - ENV=${ENV}
-      - REDIS_HOST=${REDIS_HOST}
-      - TZ=${TZ}
-      - BOT_SECRET_TOKEN=${BOT_SECRET_TOKEN}
-      - GIPHY_API_KEY=${GIPHY_API_KEY}
-      - BIBLE_API_KEY=${BIBLE_API_KEY}
+      - ENV
+      - REDIS_HOST
+      - TZ
+      - BOT_SECRET_TOKEN
+      - GIPHY_API_KEY
+      - BIBLE_API_KEY
     restart: unless-stopped
     links:
       - redis
