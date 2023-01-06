@@ -16,14 +16,14 @@ async function loadCommands() {
   for (const item of commandDirItems) {
     if (statSync(path.join(__dirname, '/commands/', item)).isDirectory()) {
       const cmd: CommandModule = await import(
-        path.join(__dirname, '/commands/', item, '/index.ts')
+        path.join(__dirname, '/commands/', item, '/index')
       ).then((x) => x?.default)
       if (cmd) {
         commandMap.set(cmd.command, cmd.execute)
+        logger.info(`registered command=%s`, cmd.command)
       }
     }
   }
-  logger.info('commands registered', commandMap)
 }
 
 const client = new Client({

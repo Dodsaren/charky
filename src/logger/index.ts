@@ -1,7 +1,7 @@
 import pino from 'pino'
 
 pino.transport({
-  target: './myTransport.ts',
+  target: './myTransport',
   options: { destination: '/dev/null' },
 })
 

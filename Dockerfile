@@ -10,9 +10,9 @@ RUN apk add --update --no-cache python3
 COPY package.json package-lock.json ./
 RUN npm ci
 
-COPY ./src/ .
-COPY index.ts .
-COPY tsconfig.json .
+COPY src ./src
+COPY tsconfig.json index.ts ./
+
 RUN npm run build
 
 CMD ["npm", "start"]
