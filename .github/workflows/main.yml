@@ -24,7 +24,12 @@ jobs:
           command_timeout: 30m
           envs: ENV,REDIS_HOST,TZ,BOT_SECRET_TOKEN,GIPHY_API_KEY,BIBLE_API_KEY
           script: |
-            echo "env = $BIBLE_API_KEY"
+            export ENV=$ENV
+            export REDIS_HOST=$REDIS_HOST
+            export TZ=$TZ
+            export BOT_SECRET_TOKEN=$EBOT_SECRET_TOKENV
+            export GIPHY_API_KEY=$GIPHY_API_KEY
+            export BIBLE_API_KEY=$BIBLE_API_KEY
             cd charky
             git checkout master
             git pull
