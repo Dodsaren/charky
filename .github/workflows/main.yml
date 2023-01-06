@@ -23,8 +23,8 @@ jobs:
           port: ${{ secrets.PORT }}
           command_timeout: 30m
           script: |
+            echo "env = $ENV"
             cd charky
             git checkout master
             git pull
-            ls -la
             docker compose up --force-recreate -d
