@@ -13,9 +13,9 @@ jobs:
           ENV: 'prod'
           REDIS_HOST: 'redis'
           TZ: 'Europe/Stockholm'
-          BOT_SECRET_TOKEN: ${{ secrets.BOT_SECRET_TOKEN }}
-          GIPHY_API_KEY: ${{ secrets.GIPHY_API_KEY }}
-          BIBLE_API_KEY: ${{ secrets.BIBLE_API_KEY }}
+          BOT_SECRET_TOKEN: '${{ secrets.BOT_SECRET_TOKEN }}'
+          GIPHY_API_KEY: '${{ secrets.GIPHY_API_KEY }}'
+          BIBLE_API_KEY: '${{ secrets.BIBLE_API_KEY }}'
         with:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
@@ -24,7 +24,7 @@ jobs:
           command_timeout: 30m
           envs: ENV,REDIS_HOST,TZ,BOT_SECRET_TOKEN,GIPHY_API_KEY,BIBLE_API_KEY
           script: |
-            echo "env = $ENV"
+            echo "env = $BIBLE_API_KEY"
             cd charky
             git checkout master
             git pull
