@@ -45,10 +45,10 @@ client.on('ready', async () => {
   mainTextChannels = [...client.channels.cache.values()].filter(
     (x) => x.type === 'GUILD_TEXT' && x.rawPosition === 0,
   ) as TextChannel[]
-  logger.info(
-    'main text channels registered:',
-    mainTextChannels.map((x) => x.name).join(', '),
-  )
+  logger.info({
+    msg: 'main text channels registered',
+    channels: mainTextChannels.map((x) => x.name),
+  })
   logger.info('Bot connected')
 })
 
@@ -70,7 +70,7 @@ client.on('disconnect', () => {
 })
 
 client.on('error', (error) => {
-  logger.info('Horrible error', error)
+  logger.error(error)
 })
 
 export default async () => {

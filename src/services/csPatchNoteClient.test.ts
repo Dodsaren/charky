@@ -11,6 +11,8 @@ import getPatchNotes from './csPatchNoteClient'
 import { setupServer } from 'msw/node'
 import { rest } from 'msw'
 
+vi.mock('../logger')
+
 const assertions = {
   link: 'https://blog.counter-strike.net/index.php/2022/09/39497/',
   pubDateString: 'Wed, 07 Sep 2022 23:06:32 +0000',

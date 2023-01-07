@@ -1,5 +1,6 @@
 import logger from './logger'
 import fetch from 'node-fetch'
+
 const { GIPHY_API_KEY } = process.env
 const baseUrl = 'https://api.giphy.com'
 
@@ -26,7 +27,7 @@ const getRandom = async (searchTerm: string, randomness = 100) => {
   })
   const response = await request(`/v1/gifs/search${queryString}`)
   const json = await response.json().then((x) => x.data.shift())
-  logger.info('got random gif from giphy, query:', json.embed_url)
+  logger.info('fetched random gif from giphy, searchTerm: %s', searchTerm)
   return json.embed_url
 }
 
