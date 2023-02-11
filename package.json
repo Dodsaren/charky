@@ -39,7 +39,7 @@
     "html-entities": "^2.3.3",
     "htmlparser2": "^8.0.1",
     "ioredis": "^4.28.0",
-    "node-fetch": "^2.6.5",
+    "node-fetch": "^2.6.8",
     "opusscript": "^0.0.8",
     "pino": "^8.8.0",
     "rss-parser": "^3.12.0",
