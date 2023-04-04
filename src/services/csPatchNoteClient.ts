@@ -2,10 +2,9 @@ import { codeBlock } from '@discordjs/builders'
 import { ChildNode } from 'domhandler'
 import { decode } from 'html-entities'
 import { parseDocument } from 'htmlparser2'
-import fetch, { Headers } from 'node-fetch'
+import fetch from 'node-fetch'
 import RssParser from 'rss-parser'
 import logger from '../logger'
-import redisClient from './redisClient'
 
 async function getPatchNotes() {
   const res = await fetch(
@@ -16,7 +15,7 @@ async function getPatchNotes() {
     throw new Error(`Failed to fetch patch notes: ${res.status}`)
   }
   const text = await res.text()
-  let parser = new RssParser()
+  const parser = new RssParser()
   const feed = await parser.parseString(text)
   const minusOneHour = new Date()
   minusOneHour.setHours(minusOneHour.getHours() - 1)

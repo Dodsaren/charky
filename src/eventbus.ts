@@ -1,7 +1,7 @@
 import logger from './logger'
 
 type SubscriberCallback = (msg: string) => void
-const subs: { symbol: Symbol; callback: SubscriberCallback }[] = []
+const subs: { symbol: symbol; callback: SubscriberCallback }[] = []
 
 const eventbus = {
   subscribe: (callback: SubscriberCallback) => {
