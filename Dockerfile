@@ -1,4 +1,4 @@
-FROM arm64v8/node:18.13.0-alpine3.16
+FROM node:26.12.1-alpine3.24
 
 RUN apk add --update alpine-sdk
 RUN apk add --update make
